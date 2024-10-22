@@ -1,0 +1,23 @@
+{
+  "name": "EIP2612-Example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "VorobevSA",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomiclabs/hardhat-truffle5": "^2.0.7",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "ethers": "^6.10.0",
+    "web3": "^4.13.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "abdk-libraries-solidity": "^3.2.0",
+    "hardhat": "^2.22.13"
+  }
+}
