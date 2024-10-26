@@ -31,6 +31,24 @@ describe("YourNewToken", function () {
     expect(await instance.name()).to.equal("YourNewToken");
   });
 
+  it("Test withdraw", async function () {
+    const [initialOwner, user] = await ethers.getSigners();
+    //ERC-20 with Permit
+    const CollectableFactory = await ethers.getContractFactory("CollectableToken");
+    const instanceCollectable = await CollectableFactory.deploy();
+    await instanceCollectable.waitForDeployment();
+    
+    // Contract implementing the logic for using Permit
+    const ContractFactory = await ethers.getContractFactory("YourNewToken");
+    const instance = await ContractFactory.deploy(await instanceCollectable.getAddress());
+    await instance.waitForDeployment();
+
+    await instanceCollectable.mint(await instance.getAddress(), 100000);
+    await instance.withdrawCollectableToken(await user.getAddress());
+
+    expect(await instanceCollectable.balanceOf(await user.getAddress())).to.equal("100000");
+  });
+
   it("Mint with Permint", async function () {
     const [initialOwner, user] = await ethers.getSigners();
 
