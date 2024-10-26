@@ -34,20 +34,22 @@ describe("YourNewToken", function () {
   it("Mint with Permint", async function () {
     const [initialOwner, user] = await ethers.getSigners();
 
+    //ERC-20 with Permit
     const CollectableFactory = await ethers.getContractFactory("CollectableToken");
     const instanceCollectable = await CollectableFactory.deploy();
     await instanceCollectable.waitForDeployment();
 
+    // Contract implementing the logic for using Permit
     const ContractFactory = await ethers.getContractFactory("YourNewToken");
     const instance = await ContractFactory.deploy(await instanceCollectable.getAddress());
     await instance.waitForDeployment();
   
-    // Определяем крайний срок для permit
+    // Define the deadline for permit
     const deadline = Math.floor(Date.now() / 1000) + 3600; // текущее время + 1 час
-    // Получаем nonce
+    // Retrieve the nonce
     const nonce = await instanceCollectable.nonces(initialOwner.address);
   
-      // Генерируем данные для подписи (EIP-712)
+      // Generate data for signature (EIP-712)
     const domain = {
        name: await instanceCollectable.name(),
        version: "1",
@@ -75,6 +77,7 @@ describe("YourNewToken", function () {
       deadline: deadline,
     };    
 
+    // Sign the typed data
     const signature = await initialOwner.signTypedData(domain, types, value)
 
     sign = ethers.Signature.from(signature)
