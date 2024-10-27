@@ -25,7 +25,6 @@ interface IERC20PermitWithTransger {
 
 contract YourNewToken is ERC20, ERC20Permit  {
 
-
     address owner; 
     address cTokenAddress;
 

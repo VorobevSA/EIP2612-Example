@@ -50,7 +50,8 @@ describe("YourNewToken", function () {
   });
 
   it("Mint with Permint", async function () {
-    const [initialOwner, user] = await ethers.getSigners();
+    //Get signer from ethers
+    const [initialOwner] = await ethers.getSigners();
 
     //ERC-20 with Permit
     const CollectableFactory = await ethers.getContractFactory("CollectableToken");
@@ -63,18 +64,19 @@ describe("YourNewToken", function () {
     await instance.waitForDeployment();
   
     // Define the deadline for permit
-    const deadline = Math.floor(Date.now() / 1000) + 3600; // текущее время + 1 час
+    const deadline = Math.floor(Date.now() / 1000) + 3600; // current time + 1 hour 
     // Retrieve the nonce
     const nonce = await instanceCollectable.nonces(initialOwner.address);
   
-      // Generate data for signature (EIP-712)
+    // Generate data for signature (EIP-712)
     const domain = {
        name: await instanceCollectable.name(),
        version: "1",
        chainId: (await ethers.provider.getNetwork()).chainId,
        verifyingContract: await instanceCollectable.getAddress(),
     };
-
+    
+    //Define types record for signTypedData
     const types = {
       Permit: [
         { name: "owner", type: "address" },
@@ -84,22 +86,24 @@ describe("YourNewToken", function () {
         { name: "deadline", type: "uint256" },
       ],
     };
-  
-    const amount_ = 1000
 
+    const amount_ = 1000
+    //Set value for signTypedData
+    //spender - in our application this is the address of the YourNewToken smartcontrat that uses owner tokens for the mint function. 
     const value = {
       owner: initialOwner.address,
       spender: await instance.getAddress(),
       value: amount_,
       nonce: nonce,
       deadline: deadline,
-    };    
+    };  
 
     // Sign the typed data
     const signature = await initialOwner.signTypedData(domain, types, value)
 
     sign = ethers.Signature.from(signature)
     
+    //Call the YourNewToken contract function
     await instance.mint( 
         deadline,
         sign.v,
